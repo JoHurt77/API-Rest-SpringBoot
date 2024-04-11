@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 //Controlador REST para gestionar operaciones CRUD relacionadas con los empleados.
 @CrossOrigin
@@ -20,14 +21,18 @@ public class EmployeeController {
 
     //mensaje de bienvenida.
     @GetMapping
-    public String hello() {
-        return "Bienvenido a la API Rest para empleados!";
+    public ResponseEntity<String> hello() {
+        return new ResponseEntity<>("Bienvenido a la API Rest para empleados!", HttpStatus.OK);
     }
 
     //Lista todos los empleados.
     @GetMapping("/list")
-    public List<Employee> getAll(){
-        return employeeService.getEmployee();
+    public ResponseEntity<List<Employee>> getAll(){
+        List<Employee> employees = employeeService.getEmployee();
+        if(employees.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     /**
@@ -37,20 +42,21 @@ public class EmployeeController {
      */
     @GetMapping("/list/{employeeId}")
     public ResponseEntity<Employee> getById(@PathVariable("employeeId") Long id){
-        Employee employee = employeeService.getEmployee(id).orElse(null);
-        if(employee != null) {
-            return new ResponseEntity<>(employee, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Optional<Employee> employee = employeeService.getEmployee(id);
+        return employee.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
      * Guardar un empleado.
      */
     @PostMapping("/save")
-    public void save(@RequestBody Employee employee){
-        employeeService.saveOrUpdate(employee);
+    public ResponseEntity<Employee> save(@RequestBody Employee employee){
+        try {
+            Employee savedEmployee = employeeService.saveOrUpdate(employee);
+            return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -58,18 +64,23 @@ public class EmployeeController {
      * Es necesario introducir todos los datos del empleado incluyendo el id.
      */
     @PutMapping("/update")
-    public void update(@RequestBody Employee employee) {
-        employeeService.saveOrUpdate(employee);
+    public ResponseEntity<Employee> update(@RequestBody Employee employee) {
+        if(employeeService.existsById(employee.getId())) {
+            try {
+                Employee updatedEmployee = employeeService.saveOrUpdate(employee);
+                return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
      * Elimina un empleado por su ID.
      * @param id ID del empleado a eliminar.
      */
-//    @DeleteMapping("/delete/{employeeId}")
-//    public void delete(@PathVariable("employeeId") Long id){
-//        employeeService.delete(id);
-//    }
     @DeleteMapping("/delete/{employeeId}")
     public ResponseEntity<Void> delete(@PathVariable("employeeId") Long id){
         try {

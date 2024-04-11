@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: API Rest para empleados
+  description: Esta es una API para gestionar operaciones CRUD ala tabla de empleados de la BBDD de coforge en Mariadb.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/employee
+    description: Servidor de desarrollo local
+paths:
+  /employee:
+    get:
+      summary: Mensaje de bienvenida
+      responses:
+        '200':
+          description: Bienvenido a la API Rest para empleados!
+        '500':
+          description: Error del servidor
+  /employee/list:
+    get:
+      summary: Lista todos los empleados
+      responses:
+        '200':
+          description: Lista de empleados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+  /employee/list/{employeeId}:
+    get:
+      summary: Obtiene un empleado por su ID
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del empleado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '404':
+          description: Empleado no encontrado
+  /employee/save:
+    post:
+      summary: Guardar un empleado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Empleado guardado
+        '500':
+          description: Error interno del servidor. No se pudo guardar el empleado.
+  /employee/update:
+    put:
+      summary: Actualizar un empleado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employee'
+      responses:
+        '200':
+          description: Empleado actualizado
+        '500':
+          description: Error interno del servidor. No se pudo guardar el empleado.
+  /employee/delete/{employeeId}:
+    delete:
+      summary: Elimina un empleado por su ID
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Empleado eliminado
+        '404':
+          description: Empleado no encontrado
+        '500':
+          description: Error del servidor
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Este es un identificador único para cada empleado.
+        firstName:
+          type: string
+          description: Nombre del empleado.
+        lastName:
+          type: string
+          description: Apellidos del empleado.
+        address:
+          type: string
+          description: Esta es la dirección del empleado.
+        email:
+          type: string
+          description: Este es el correo electrónico del empleado.

@@ -32,39 +32,29 @@ public class EmployeeService {
     }
 
     /**
-     * Guarda o actualiza un empleado.
-     * @param employee Objeto Employee a guardar o actualizar.
+     * Comprueba si existe un empleado con el ID proporcionado.
+     * @param id El ID del empleado a verificar.
+     * @return true si el empleado existe, false en caso contrario.
      */
-    public void saveOrUpdate(Employee employee){
-        employeeRepository.save(employee);
+    public boolean existsById(Long id) {
+        return employeeRepository.existsById(id);
     }
 
     /**
-     * Elimina un empleado por su ID.
-     * @param id ID del empleado a eliminar.
-     * @throws IllegalArgumentException si no se encuentra ningún empleado con el ID proporcionado.
+     * Guarda o actualiza un empleado.
+     * @param employee Objeto Employee a guardar o actualizar.
+     * @return
      */
-//    public void delete(Long id){
-//        Optional<Employee> employeeOptional = employeeRepository.findById(id);
-//        if (employeeOptional.isPresent()) {
-//            employeeRepository.deleteById(id);
-//        } else {
-//            throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
-//        }
-//    }
+    public Employee saveOrUpdate(Employee employee){
+        employeeRepository.save(employee);
+        return employee;
+    }
+
     /**
      * Elimina un empleado por su ID.
      * @param id ID del empleado a eliminar.
      * @return true si se eliminó correctamente, false si no se encontró ningún empleado con el ID proporcionado.
-    public void delete(Long id) {
-    Optional<Employee> employeeOptional = employeeRepository.findById(id);
-    if (employeeOptional.isPresent()) {
-    employeeRepository.deleteById(id);
-    } else {
-    throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
-    }
-    */
-
+     **/
     public void delete(Long id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         if (employeeOptional.isPresent()) {
@@ -73,5 +63,6 @@ public class EmployeeService {
             throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
         }
     }
+
 
 }

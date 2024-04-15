@@ -3,9 +3,8 @@ package com.api.crud.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data //para los getters y setters explicitos
+@Data //para los getters y setters automaticos
 @Entity
-@Table
 public class Employee {
 
     @Id //Id único que se genera automáticamente

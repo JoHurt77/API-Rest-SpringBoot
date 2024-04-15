@@ -25,7 +25,10 @@ public class EmployeeController {
         return new ResponseEntity<>("Bienvenido a la API Rest para empleados!", HttpStatus.OK);
     }
 
-    //Lista todos los empleados.
+    /**
+     * Lista todos los empleados.
+     * @return
+    **/
     @GetMapping("/list")
     public ResponseEntity<List<Employee>> getAll(){
         List<Employee> employees = employeeService.getEmployee();

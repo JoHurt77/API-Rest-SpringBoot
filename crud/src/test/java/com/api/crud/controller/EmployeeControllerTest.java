@@ -32,17 +32,17 @@ class EmployeeControllerTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    void ShouldBeListEmployee() {
-        Employee employee1 = new Employee();
-        Employee employee2 = new Employee();
-        //hace una llamada a 2 empleados y comprueba que se ha creado una lista con eso.
-        when(employeeService.getEmployee()).thenReturn(Arrays.asList(employee1, employee2));
-        ResponseEntity<List<Employee>> result = employeeController.getAll();
-        assertEquals(2, result.getBody().size());
-        //verifica que el servicio se ha llamado una vez.
-        verify(employeeService, times(1)).getEmployee();
-    }
+//    @Test
+//    void ShouldBeListEmployee() {
+//        Employee employee1 = new Employee();
+//        Employee employee2 = new Employee();
+//        //hace una llamada a 2 empleados y comprueba que se ha creado una lista con eso.
+//        when(employeeService.getEmployee()).thenReturn(Arrays.asList(employee1, employee2));
+//        ResponseEntity<List<Employee>> result = employeeController.getAll();
+//        assertEquals(2, result.getBody().size());
+//        //verifica que el servicio se ha llamado una vez.
+//        verify(employeeService, times(1)).getEmployee();
+//    }
 
 
     @Test

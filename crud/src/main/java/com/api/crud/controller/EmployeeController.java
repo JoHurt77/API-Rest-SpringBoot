@@ -65,7 +65,7 @@ public class EmployeeController {
      */
     @PutMapping("/update")
     public ResponseEntity<Employee> update(@RequestBody Employee employee) {
-        if(employeeService.existsById(employee.getId())) {
+        if(employeeService.existsById(employee.getIdEmployee())) {
             try {
                 Employee updatedEmployee = employeeService.saveOrUpdate(employee);
                 return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);

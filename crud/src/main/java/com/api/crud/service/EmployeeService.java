@@ -1,7 +1,9 @@
 package com.api.crud.service;
 
 import com.api.crud.entity.Employee;
+import com.api.crud.entity.WorkCenter;
 import com.api.crud.repository.EmployeeRepository;
+import com.api.crud.repository.WorkCenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private WorkCenterRepository workCenterRepository;
     /**
      * Obtiene todos los empleados.
      */
@@ -45,7 +49,19 @@ public class EmployeeService {
      * @param employee Objeto Employee a guardar o actualizar.
      * @return
      */
+//    public Employee saveOrUpdate(Employee employee){
+//        employeeRepository.save(employee);
+//        return employee;
+//    }
     public Employee saveOrUpdate(Employee employee){
+        // Busca el WorkCenter por id
+        WorkCenter workCenter = workCenterRepository.findById(employee.getWorkCenter().getIdWorkCenter())
+                .orElseThrow(() -> new IllegalArgumentException("WorkCenter not found by id: " + employee.getWorkCenter().getIdWorkCenter()));
+
+        // Asigna el WorkCenter al empleado
+        employee.setWorkCenter(workCenter);
+
+        // Guarda y devuelve el empleado
         employeeRepository.save(employee);
         return employee;
     }
@@ -60,7 +76,7 @@ public class EmployeeService {
         if (employeeOptional.isPresent()) {
             employeeRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Empleado con ID " + id + " no encontrado");
+            throw new IllegalArgumentException("Empleado not found by ID : " + id);
         }
     }
 

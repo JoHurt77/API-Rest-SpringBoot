@@ -22,7 +22,7 @@ public class EmployeeService {
     /**
      * Obtiene todos los empleados.
      */
-    public List<Employee> getEmployee(){
+    public List<Employee> getAllEmployees(){
         return employeeRepository.findAll();
     }
 
@@ -31,7 +31,7 @@ public class EmployeeService {
      * @param id ID del empleado a obtener.
      * @return Optional que contiene el empleado si se encuentra, o vacío si no se encuentra.
      */
-    public Optional<Employee> getEmployee(Long id){
+    public Optional<Employee> getEmployeeById(Long id){
         return employeeRepository.findById(id);
     }
 
@@ -40,7 +40,7 @@ public class EmployeeService {
      * @param id El ID del empleado a verificar.
      * @return true si el empleado existe, false en caso contrario.
      */
-    public boolean existsById(Long id) {
+    public boolean existsEmployeeById(Long id) {
         return employeeRepository.existsById(id);
     }
 
@@ -49,19 +49,7 @@ public class EmployeeService {
      * @param employee Objeto Employee a guardar o actualizar.
      * @return
      */
-//    public Employee saveOrUpdate(Employee employee){
-//        employeeRepository.save(employee);
-//        return employee;
-//    }
     public Employee saveOrUpdate(Employee employee){
-        // Busca el WorkCenter por id
-        WorkCenter workCenter = workCenterRepository.findById(employee.getWorkCenter().getIdWorkCenter())
-                .orElseThrow(() -> new IllegalArgumentException("WorkCenter not found by id: " + employee.getWorkCenter().getIdWorkCenter()));
-
-        // Asigna el WorkCenter al empleado
-        employee.setWorkCenter(workCenter);
-
-        // Guarda y devuelve el empleado
         employeeRepository.save(employee);
         return employee;
     }
@@ -71,7 +59,7 @@ public class EmployeeService {
      * @param id ID del empleado a eliminar.
      * @return true si se eliminó correctamente, false si no se encontró ningún empleado con el ID proporcionado.
      **/
-    public void delete(Long id) {
+    public void deleteEmployee(Long id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         if (employeeOptional.isPresent()) {
             employeeRepository.deleteById(id);
@@ -79,6 +67,4 @@ public class EmployeeService {
             throw new IllegalArgumentException("Empleado not found by ID : " + id);
         }
     }
-
-
 }

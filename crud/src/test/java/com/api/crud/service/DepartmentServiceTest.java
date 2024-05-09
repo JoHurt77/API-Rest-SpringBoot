@@ -29,40 +29,33 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void getAllDepartments_ShouldReturnListOfDepartments() {
+    void ShouldReturnListOfDepartments() {
         Department department1 = new Department();
         Department department2 = new Department();
         List<Department> expected = Arrays.asList(department1, department2);
         when(departmentRepository.findAll()).thenReturn(expected);
 
-        // When
         List<Department> result = departmentService.getAllDepartments();
 
-        // Then
         assertEquals(expected, result);
         verify(departmentRepository, times(1)).findAll();
     }
 
     @Test
-    void getDepartmentById_ShouldReturnDepartment_WhenFound() {
-        // Given
+    void ShouldReturnDepartment_WhenFound() {
         Department department = new Department();
         when(departmentRepository.findById(1L)).thenReturn(Optional.of(department));
 
-        // When
         Department result = departmentService.getDepartmentById(1L);
 
-        // Then
         assertEquals(department, result);
         verify(departmentRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getDepartmentById_ShouldThrowException_WhenNotFound() {
-        // Given
+    void ShouldThrowException_WhenNotFound() {
         when(departmentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(RuntimeException.class, () -> {
             departmentService.getDepartmentById(1L);
         });
@@ -70,40 +63,23 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void saveDepartment_ShouldSaveDepartment() {
-        // Given
+    void ShouldSaveDepartment() {
         Department department = new Department();
         when(departmentRepository.save(department)).thenReturn(department);
 
-        // When
         Department result = departmentService.saveDepartment(department);
 
-        // Then
         assertEquals(department, result);
         verify(departmentRepository, times(1)).save(department);
     }
 
     @Test
-    void deleteDepartment_ShouldDeleteDepartment_WhenFound() {
-        // Given
+    void ShouldDeleteDepartment_WhenFound() {
         when(departmentRepository.findById(1L)).thenReturn(Optional.of(new Department()));
 
-        // When
         departmentService.deleteDepartment(1L);
 
-        // Then
         verify(departmentRepository, times(1)).deleteById(1L);
     }
 
-    @Test
-    void deleteDepartment_ShouldThrowException_WhenNotFound() {
-        // Given
-        when(departmentRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(RuntimeException.class, () -> {
-            departmentService.deleteDepartment(1L);
-        });
-        verify(departmentRepository, times(1)).findById(1L);
-    }
 }

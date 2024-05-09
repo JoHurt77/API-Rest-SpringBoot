@@ -4,6 +4,7 @@ import com.api.crud.entity.Department;
 import com.api.crud.entity.Employee;
 import com.api.crud.entity.WorkCenter;
 import com.api.crud.service.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,6 +29,30 @@ public class EmployeeControllerTest {
     @InjectMocks
     private EmployeeController employeeController;
 
+    private Employee employee1;
+
+    @BeforeEach
+    public void setUp() {
+        // Inicializar un empleado que se utilizará en las pruebas
+        employee1 = new Employee();
+        employee1.setId(1L);
+        employee1.setFirstName("Juan");
+        employee1.setLastName("Martin");
+        employee1.setAddress("House");
+        employee1.setEmail("juan@gmail.com");
+        employee1.setWorkCenter(new WorkCenter());
+        employee1.setDepartment(new Department());
+
+        // Configurar el mock para devolver employee1 cuando se llama a getEmployeeById(1L)
+        lenient().when(employeeService.getEmployeeById(1L)).thenReturn(Optional.of(employee1));
+
+        // Configurar el mock para guardar employee1 y devolverlo
+        lenient().when(employeeService.saveOrUpdate(employee1)).thenReturn(employee1);
+
+        // Configurar el mock para realizar una operación de eliminación sin hacer nada
+        lenient().doNothing().when(employeeService).deleteEmployee(employee1.getId());
+    }
+
     @Test
     @DisplayName("Should return welcome message")
     public void testHello() {
@@ -42,19 +64,8 @@ public class EmployeeControllerTest {
     @Test
     @DisplayName("Should return all employees")
     public void testGetAllEmployees() {
-        List<Employee> employees = new ArrayList<>();
-
-        Employee employee1 = new Employee();
-        employee1.setId(1L);
-        employee1.setFirstName("Juan");
-        employee1.setLastName("Martin");
-        employee1.setAddress("House");
-        employee1.setEmail("juan@gmail.com");
-        employee1.setWorkCenter(new WorkCenter());
-        employee1.setDepartment(new Department());
-
-        employees.add(employee1);
-
+        // Crear una lista de empleados que incluye employee1
+        List<Employee> employees = Collections.singletonList(employee1);
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
         ResponseEntity<List<Employee>> response = employeeController.getAllEmployees();
@@ -64,60 +75,70 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    @DisplayName("Should return a empty list")
+    @DisplayName("Should return an empty list")
     public void testGetAllEmployeesEmpty() {
+        // Configurar el mock para devolver una lista vacía
         List<Employee> employees = new ArrayList<>();
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
+        // Llamar al método bajo prueba
         ResponseEntity<List<Employee>> response = employeeController.getAllEmployees();
 
+        // Verificar que el servicio fue llamado correctamente
         verify(employeeService, times(1)).getAllEmployees();
+
+        // Verificar que el código de estado sea NO_CONTENT
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        // Verificar que el cuerpo de la respuesta sea null
         assertNull(response.getBody());
     }
 
+
+
     @Test
-    @DisplayName("Should return an employee by id")
+    @DisplayName("Should return an employee by ID")
     public void testGetEmployeeById() {
         Long id = 1L;
-        Employee employee = new Employee();
-        when(employeeService.getEmployeeById(id)).thenReturn(Optional.of(employee));
 
         ResponseEntity<Employee> response = employeeController.getEmployeeById(id);
 
         verify(employeeService, times(1)).getEmployeeById(id);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(employee, response.getBody());
+        assertEquals(employee1, response.getBody());
     }
 
     @Test
     @DisplayName("Should save an employee and return the saved employee with status CREATED")
     public void testSaveEmployee() {
-        Employee employee = new Employee();
-        when(employeeService.saveOrUpdate(employee)).thenReturn(employee);
+        ResponseEntity<Employee> response = employeeController.saveEmployee(employee1);
 
-        ResponseEntity<Employee> response = employeeController.saveEmployee(employee);
-
-        verify(employeeService, times(1)).saveOrUpdate(employee);
+        verify(employeeService, times(1)).saveOrUpdate(employee1);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(employee, response.getBody());
+        assertEquals(employee1, response.getBody());
     }
 
     @Test
     @DisplayName("Should update an existing employee and return the updated employee with status OK")
     public void testUpdateEmployee() {
-        Employee employee = new Employee();
-        employee.setId(1L);
-        when(employeeService.existsEmployeeById(employee.getId())).thenReturn(true);
-        when(employeeService.saveOrUpdate(employee)).thenReturn(employee);
+        // Configurar el mock para devolver true cuando se verifica la existencia del empleado
+        when(employeeService.existsEmployeeById(employee1.getId())).thenReturn(true);
 
-        ResponseEntity<Employee> response = employeeController.updateEmployee(employee);
+        // Configurar el mock para devolver el empleado actualizado
+        when(employeeService.saveOrUpdate(employee1)).thenReturn(employee1);
 
-        verify(employeeService, times(1)).existsEmployeeById(employee.getId());
-        verify(employeeService, times(1)).saveOrUpdate(employee);
+        // Llamar al método bajo prueba
+        ResponseEntity<Employee> response = employeeController.updateEmployee(employee1);
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(employeeService, times(1)).existsEmployeeById(employee1.getId());
+        verify(employeeService, times(1)).saveOrUpdate(employee1);
+
+        // Verificar que el código de estado y el cuerpo de la respuesta sean los esperados
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(employee, response.getBody());
+        assertEquals(employee1, response.getBody());
     }
+
 
     @Test
     @DisplayName("Should return status NOT_FOUND when trying to update a non-existing employee")
@@ -135,8 +156,7 @@ public class EmployeeControllerTest {
     @Test
     @DisplayName("Should delete an employee and return status NO_CONTENT")
     public void testDeleteEmployee() {
-        Long id = 1L;
-        doNothing().when(employeeService).deleteEmployee(id);
+        Long id = employee1.getId();
 
         ResponseEntity<Void> response = employeeController.delete(id);
 
@@ -177,5 +197,5 @@ public class EmployeeControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("Error interno del servidor: Test exception", response.getBody());
     }
-
 }
+

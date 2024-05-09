@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-@Data //para los getters y setters explicitos
+@Data //para los getters y setters automáticos
 @Entity
 public class Employee {
 
@@ -33,16 +33,4 @@ public class Employee {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    //Para añadir el centro del empleado
-    //Especifica el campo por el cual se une la entidad
-//    @JoinColumn(name = "idWorkCenter")
-//    //se utiliza para manejar las referencias circulares. Evita que Jackson serialice el objeto workCenter
-//    @JsonBackReference
-
-
-    // Getter personalizado para el idWorkCenter
-//    @JsonProperty("idWorkCenter")
-//    public Long getWorkCenterId() {
-//        return workCenter != null ? workCenter.getIdWorkCenter() : null;
-//    }
 }

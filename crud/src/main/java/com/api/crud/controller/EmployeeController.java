@@ -1,6 +1,7 @@
 package com.api.crud.controller;
 
 import com.api.crud.entity.Employee;
+import com.api.crud.mapper.EmployeeMapper;
 import com.api.crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+//    @Autowired
+//    private EmployeeMapper employeeMapper;
 
     //mensaje de bienvenida.
     @GetMapping
@@ -60,7 +64,7 @@ public class EmployeeController {
             Employee savedEmployee = employeeService.saveOrUpdate(employee);
             return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
-            // Manejar violaciones de integridad de datos (por ejemplo, violación de restricciones únicas)
+            // Manejar violaciones de integridad de datos
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             // Manejar otros errores internos del servidor
@@ -100,13 +104,9 @@ public class EmployeeController {
         }
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        return new ResponseEntity<>("Error de integridad de datos: " + ex.getMessage(), HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
-        return new ResponseEntity<>("Error interno del servidor: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+//        return new ResponseEntity<>("Error de integridad de datos: " + ex.getMessage(), HttpStatus.CONFLICT);
+//    }
+//
 }

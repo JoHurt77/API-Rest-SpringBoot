@@ -31,6 +31,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/WorkCenter'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /employee/update:
     put:
       tags:
@@ -49,6 +53,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Employee'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /department/update/{id}:
     put:
       tags:
@@ -74,6 +82,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Department'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /workCenter/save:
     post:
       tags:
@@ -92,6 +104,8 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/WorkCenter'
+        '500':
+          description: INTERNAL SERVER ERROR
   /employee/save:
     post:
       tags:
@@ -110,6 +124,8 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Employee'
+        '500':
+          description: INTERNAL SERVER ERROR
   /department/save:
     post:
       tags:
@@ -128,6 +144,8 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Department'
+        '500':
+          description: INTERNAL SERVER ERROR
   /workCenter/list:
     get:
       tags:
@@ -142,6 +160,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/WorkCenter'
+        '204':
+          description: NO CONTENT
+        '500':
+          description: INTERNAL SERVER ERROR
   /workCenter/list/{id}:
     get:
       tags:
@@ -161,6 +183,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/WorkCenter'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /employee:
     get:
       tags:
@@ -187,6 +213,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Employee'
+        '204':
+          description: NO CONTENT
+        '500':
+          description: INTERNAL SERVER ERROR
   /employee/list/{employeeId}:
     get:
       tags:
@@ -206,6 +236,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Employee'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /department/list:
     get:
       tags:
@@ -220,6 +254,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Department'
+        '204':
+          description: NO CONTENT
+        '500':
+          description: INTERNAL SERVER ERROR
   /department/list/{id}:
     get:
       tags:
@@ -239,6 +277,10 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Department'
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /workCenter/delete/{id}:
     delete:
       tags:
@@ -254,6 +296,10 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /employee/delete/{employeeId}:
     delete:
       tags:
@@ -269,6 +315,10 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
   /department/delete/{id}:
     delete:
       tags:
@@ -284,6 +334,10 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: NOT FOUND
+        '500':
+          description: INTERNAL SERVER ERROR
 components:
   schemas:
     WorkCenter:

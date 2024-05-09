@@ -30,43 +30,36 @@ class WorkCenterServiceTest {
     }
 
     @Test
-    @DisplayName("Test getAllWorkCenters method")
+    @DisplayName("Should get all WorkCenters")
     void testGetAll() {
         WorkCenter workCenter1 = new WorkCenter();
         WorkCenter workCenter2 = new WorkCenter();
         List<WorkCenter> expected = Arrays.asList(workCenter1, workCenter2);
         when(workCenterRepository.findAll()).thenReturn(expected);
 
-        // When
         List<WorkCenter> result = workCenterService.getAllWorkCenters();
 
-        // Then
         assertEquals(expected, result);
         verify(workCenterRepository, times(1)).findAll();
     }
 
     @Test
-    @DisplayName("Test getWorkCenterById method when WorkCenter is found")
+    @DisplayName("Should get a WorkCenter by Id")
     void testGetByIdFound() {
-        // Given
         WorkCenter workCenter = new WorkCenter();
         when(workCenterRepository.findById(1L)).thenReturn(Optional.of(workCenter));
 
-        // When
         WorkCenter result = workCenterService.getWorkCenterById(1L);
 
-        // Then
         assertEquals(workCenter, result);
         verify(workCenterRepository, times(1)).findById(1L);
     }
 
     @Test
-    @DisplayName("Test getWorkCenterById method when WorkCenter is not found")
+    @DisplayName("Should throws an exception when a WorkCenter ByID is Not found")
     void testGetByIdNotFound() {
-        // Given
         when(workCenterRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(RuntimeException.class, () -> {
             workCenterService.getWorkCenterById(1L);
         });
@@ -74,40 +67,32 @@ class WorkCenterServiceTest {
     }
 
     @Test
-    @DisplayName("Test saveWorkCenter method")
+    @DisplayName("Should save a WorkCenter")
     void testSave() {
-        // Given
         WorkCenter workCenter = new WorkCenter();
         when(workCenterRepository.save(workCenter)).thenReturn(workCenter);
 
-        // When
         WorkCenter result = workCenterService.saveWorkCenter(workCenter);
 
-        // Then
         assertEquals(workCenter, result);
         verify(workCenterRepository, times(1)).save(workCenter);
     }
 
     @Test
-    @DisplayName("Test deleteWorkCenter method when WorkCenter is found")
+    @DisplayName("Should delete a WorkCenter when is found")
     void testDeleteFound() {
-        // Given
         when(workCenterRepository.findById(1L)).thenReturn(Optional.of(new WorkCenter()));
 
-        // When
         workCenterService.deleteWorkCenter(1L);
 
-        // Then
         verify(workCenterRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    @DisplayName("Test deleteWorkCenter method when WorkCenter is not found")
+    @DisplayName("Should throw an exception when trying to DELETE a WorkCenter is Not found")
     void testDeleteNotFound() {
-        // Given
         when(workCenterRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(RuntimeException.class, () -> {
             workCenterService.deleteWorkCenter(1L);
         });
